@@ -22,5 +22,8 @@ class Mahasiswa extends Model//definisi model
         'Nama',
         'Kelas',
         'Jurusan',
+        'Email',
+        'Alamat',
+        'TTL',
     ];
 };

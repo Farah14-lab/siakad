@@ -12,6 +12,14 @@
     </div>
  </div>
 
+ <form class="form" method="get" action="{{ route('search') }}">
+    <div class="form-group w-100 mb-3">
+        <label for="search" class="d-block mr-2">Search Form</label>
+        <input type="text" name="search" class="form-control w-75 d-inline" id="search" placeholder="Search your data...">
+        <button type="submit" class="btn btn-primary mb-1">Cari</button>
+    </div>
+ </form>
+
  @if ($message = Session::get('success'))
     <div class="alert alert-success">
         <p>{{ $message }}</p>
@@ -24,6 +32,9 @@
         <th>Nama</th>
         <th>Kelas</th>
         <th>Jurusan</th>
+        <th>Email</th>
+        <th>Alamat</th>
+        <th>TTL</th>
         <th width="280px">Action</th>
     </tr>
     @foreach ($mahasiswa as $mhs)
@@ -32,6 +43,9 @@
             <td>{{ $mhs ->nama }}</td>
             <td>{{ $mhs ->kelas }}</td>
             <td>{{ $mhs ->jurusan }}</td>
+            <td>{{ $mhs ->email }}</td>
+            <td>{{ $mhs ->alamat }}</td>
+            <td>{{ $mhs ->ttl }}</td>
             <td>
             <form action="{{ route('mahasiswa.destroy',['mahasiswa'=>$mhs->nim]) }}" method="POST">
 
@@ -39,10 +53,16 @@
                 <a class="btn btn-primary" href="{{ route('mahasiswa.edit',$mhs->nim) }}">Edit</a>
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-danger" >Delete</button>
             </form>
             </td>
         </tr>
     @endforeach
  </table>
+        Halaman : {{ $mahasiswa->currentPage() }} <br/>
+        Jumlah Data : {{ $mahasiswa->total() }} <br/>
+        Data Per Halaman : {{ $mahasiswa->perPage() }} <br/>
+        <br>
+        {{ $mahasiswa->links() }} 
  @endsection
+

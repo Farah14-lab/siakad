@@ -32,11 +32,23 @@
                     </div>
                     <div class="form-group">
                         <label for="Kelas">Kelas</label>
-                        <input type="Kelas" name="Kelas" class="form-control" id="Kelas" ariadescribedby="password" >
+                        <input type="Kelas" name="Kelas" class="form-control" id="Kelas" ariadescribedby="Kelas" >
                     </div>
                     <div class="form-group">
                         <label for="Jurusan">Jurusan</label>
                         <input type="Jurusan" name="Jurusan" class="form-control" id="Jurusan" ariadescribedby="Jurusan" >
+                    </div>
+                    <div class="form-group">
+                        <label for="Email">Email</label>
+                        <input type="Email" name="Email" class="form-control" id="Email" ariadescribedby="Email" >
+                    </div>
+                    <div class="form-group">
+                        <label for="Alamat">Alamat</label>
+                        <input type="Alamat" name="Alamat" class="form-control" id="Alamat" ariadescribedby="Alamat" >
+                    </div>
+                    <div class="form-group">
+                        <label for="TTL">TTL</label>
+                        <input type="TTL" name="TTL" class="form-control" id="TTL" ariadescribedby="TTL" >
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
