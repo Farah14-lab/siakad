@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Kelas;
 use App\Models\Mahasiswa_Matakuliah;
+use PDF;
 
 class MahasiswaController extends Controller
 {
@@ -37,22 +38,25 @@ class MahasiswaController extends Controller
             'Nim'=>'required',
             'Nama'=>'required',
             'Kelas'=>'required',
-            'Jurusan'=>'required',
+            'Jurusan'=>'required|string|max:25',
+            'foto'=>'required|string',
         ]);
+        if ($request->file('foto')) {
+            $validasi['foto'] = $request->file('foto')->store('images', 'public');
+        }
+        //$mahasiswa = new Mahasiswa;
+        //$mahasiswa->nim = $request->get('Nim');
+        //$mahasiswa->nama = $request->get('Nama');
+        //$mahasiswa->jurusan = $request->get('Jurusan');
+        //$mahasiswa->kelas_id = $request->get('Kelas');
+        //$mahasiswa->save();
 
-        $mahasiswa = new Mahasiswa;
-        $mahasiswa->nim = $request->get('Nim');
-        $mahasiswa->nama = $request->get('Nama');
-        $mahasiswa->jurusan = $request->get('Jurusan');
-        $mahasiswa->kelas_id = $request->get('Kelas');
-        $mahasiswa->save();
-
-        $kelas = new Kelas;
-        $kelas->id = $request->get('Kelas');
+        //$kelas = new Kelas;
+        //$kelas->id = $request->get('Kelas');
 
         //fungsi qloquent untuk menambahkan data dengan relasi belongsTo
-        $mahasiswa->kelas()->associate($kelas);
-        $mahasiswa->save();
+        //$mahasiswa->kelas()->associate($kelas);
+        //$mahasiswa->save();
 
         //jika data berhasil ditambahkan, akan kembali dengan ke halaman utama
         return redirect()->route('mahasiswa.index')
@@ -81,23 +85,40 @@ class MahasiswaController extends Controller
             'Nim'=>'required',
             'Nama'=>'required',
             'Kelas'=>'required',
-            'Jurusan'=>'required',
+            'Jurusan'=>'required|string|max:25',
+            'foto'=>'required|string',
         ]);
-        $mahasiswa = Mahasiswa::with('kelas')->where('nim',$Nim)->first();
-        $mahasiswa->nim = $request->get('Nim');
-        $mahasiswa->nama = $request->get('Nama');
-        $mahasiswa->jurusan = $request->get('Jurusan');
-        $mahasiswa->kelas_id = $request->get('Kelas');
-        $mahasiswa->save();
+        if ($dataMhs->foto && file_exists(storage_path('app/public/' . $dataMhs->foto))) {
+            Storage::delete('public/' . $dataMhs->foto);
+        }
+        $foto = $request->file('foto')->store('images', 'public');
+        $data['foto'] = $foto;
 
-        $kelas = new Kelas;
-        $kelas->id = $request->get('Kelas');
+        //fungsi eloquent untuk mengupdate data inputan kita
+        //memanggil nama kolom dalam model mahasiswa yang sesuai dengan id mahasiswa yg di req
+        Mahasiwa::where('Nim', $Nim)->update($data);
+
+
+        //jika data berhasil diupdate, akan kembali ke halaman utama
+        return redirect()->route('mahasiswa.index')
+            ->with('success', 'Mahasiswa Berhasil Diupdate');
+        //$mahasiswa = Mahasiswa::with('kelas')->where('nim',$Nim)->first();
+        //$mahasiswa->nim = $request->get('Nim');
+        //$mahasiswa->nama = $request->get('Nama');
+        //$mahasiswa->jurusan = $request->get('Jurusan');
+        //$mahasiswa->kelas_id = $request->get('Kelas');
+        //$mahasiswa->save();
+
+        //$kelas = new Kelas;
+        //$kelas->id = $request->get('Kelas');
 
         //fungsi qloquent untuk menambahkan data dengan relasi belongsTo
-        $mahasiswa->kelas()->associate($kelas);
-        $mahasiswa->save();
+        //$mahasiswa->kelas()->associate($kelas);
+        //$mahasiswa->save();
 
         //jika data berhasil ditambahkan, akan kembali dengan ke halaman utama
+        Mahasiwa::create($validasi);
+
         return redirect()->route('mahasiswa.index')
             ->with('success','Mahasiswa Berhasil Edit');
     }
@@ -119,10 +140,19 @@ class MahasiswaController extends Controller
            
     }
 
-    public function nilai($id_mahasiswa)
+    public function nilai($Nim)
     {
-        $mhs = Mahasiswa_Matakuliah::with('matakuliah')->where("mahasiswa_id", $id_mahasiswa)->get();
-        $mhs->mahasiswa = Mahasiswa::with('kelas')->where("nim", $id_mahasiswa)->first();
-        return view('mahasiswa.nilai', compact('mhs'));
+        $mahasiswa = Mahasiwa::where('nim', $Nim)->first();
+        return view('mahasiswa.nilai', [
+            'mhs' => $mahasiswa,
+        ]);
+    }
+
+    public function cetak_pdf($Nim)
+    {
+        $ekspor = Mahasiwa::find($Nim);
+        $mhs = $ekspor;
+        $pdf = PDF::loadview('mahasiswa.ekspor', compact('mhs'));
+        return $pdf->stream();
     }
 };

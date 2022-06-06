@@ -28,4 +28,6 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/mahasiswa/nilai/{mahasiswa}',[MahasiswaController::class,'mhsMatkul'])->name('nilai');
+Route::get('mahasiswa/nilai/{Nim}', [MahasiwaController::class, 'nilai'])->name('nilai');
+
+Route::get('cetak_pdf/{Nim}',[MahasiwaController::class, 'cetak_pdf']);
