@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<head>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+</head>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
